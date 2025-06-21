@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Listing {{ row.listing_id }}</title>
+  <link rel="stylesheet" href="{{ request.url_for('static', path='css/listings.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Listing {{ row.listing_id }}</h1>
+
+    <table class="table">
+      <tbody>
+        <tr><th>Address</th><td>{{ row.address }}</td></tr>
+        <tr><th>Loan type</th><td>{{ labels[row.loan_type] }}</td></tr>
+        <tr><th>Interest rate</th><td>{{ row.interest_rate }} %</td></tr>
+        <tr><th>Loan balance</th><td>{{ row.balance|currency }}</td></tr>
+        <tr><th>PITI</th><td>{{ row.piti|currency }}</td></tr>
+        <tr><th>Beds / Baths</th><td>{{ row.beds }} / {{ row.baths }}</td></tr>
+        <tr><th>Square feet</th><td>{{ row.sqft|int }} sqft</td></tr>
+        <tr><th>MLS status</th><td>{{ row.mls_status }}</td></tr>
+        <tr><th>Date added</th><td>{{ row.date_added }}</td></tr>
+        <tr><th>Realtor</th><td>{{ row.realtor_name }}</td></tr>
+        <tr><th>MLS link</th><td><a href="{{ row.mls_link }}" target=\"_blank\">View on MLS</a></td></tr>
+      </tbody>
+    </table>
+    
+    <p>
+      <a href="{{ request.headers.get('referer', '/') }}">Back to listings</a>
+    </p>
+  </div>
+</body>
+</html>

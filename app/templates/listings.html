@@ -1,0 +1,76 @@
+<link rel="stylesheet" href="{{ request.url_for('static', path='css/listings.css') }}">
+<div class="container">
+
+  <h1>Assumable Listings</h1>
+
+  <form method="get" class="filters">
+  	<label>
+  		Loan type
+  	<div class="filter-drop" data-drop>
+  		<button class="filter-toggle" type="button"
+          		aria-haspopup="true" aria-expanded="{{ 'true' if loan_types else 'false' }}">
+    {% if loan_types %}{{ loan_types|length }} chosen{% else %}Select{% endif %}
+  </button>
+
+  <div class="filter-menu" role="menu" hidden>
+    {% for code, label in labels.items() %}
+  <label class="filter-option" role="menuitemcheckbox">
+    <input type="checkbox"
+           name="loan_type"
+           value="{{ code }}"
+           {% if loan_types and code in loan_types %}checked{% endif %}>
+    {{ label }}
+  </label>
+{% endfor %}
+  </div>
+</div>
+</label>
+
+
+    <label>
+      Max price
+      <input type="number" name="max_price" placeholder="e.g. 350000"
+             value="{{ max_price or '' }}">
+    </label>
+    
+    <label class="toggle-wrap">
+    	<input  type="checkbox"
+          		name="ir35"
+          		value="1"
+          		id="ir35"
+          		class="toggle"
+          		{% if ir35 %}checked{% endif %} >
+    	<span class="filterBtn">Assumable IR &le; 3.5</span>
+    </label>
+    
+    <button class="applyBtn">Apply</button>
+  </form>
+
+  <table class="table">
+    <thead>
+      <tr><th>ID</th><th>Address</th><th>Price</th><th>Type</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+        <tr class="row-link">
+          <td><a href="{{ url_for('listing_detail', lid=r.listing_id) }}">{{ r.listing_id }}</a></td>
+          <td><a href="{{ url_for('listing_detail', lid=r.listing_id) }}">{{ r.address }}</a></td>
+          <td><a href="{{ url_for('listing_detail', lid=r.listing_id) }}">{{ r.price|currency }}</a></td>
+          <td>
+          	<a href="{{ url_for('listing_detail', lid=r.listing_id) }}">
+          		<span class="badge badge-{{ r.loan_type|lower }}"
+          					title="{{ labels[r.loan_type] }}">
+          			{{ labels[r.loan_type] }}
+          		</span>
+          	</a>
+          </td>
+          <td><a href="{{ url_for('listing_detail', lid=r.listing_id) }}">{{ r.mls_status }}</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</div>
+
+
+<script src="{{ request.url_for('static', path='js/filters.js') }}" defer></script>
