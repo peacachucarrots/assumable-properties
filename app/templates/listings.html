@@ -3,48 +3,66 @@
 
   <h1>Assumable Listings</h1>
 
-  <form method="get" class="filters">
-  	<label>
-  		Loan type
-  	<div class="filter-drop" data-drop>
-  		<button class="filter-toggle" type="button"
-          		aria-haspopup="true" aria-expanded="{{ 'true' if loan_types else 'false' }}">
-    {% if loan_types %}{{ loan_types|length }} chosen{% else %}Select{% endif %}
-  </button>
+<form method="get" class="filters">
 
-  <div class="filter-menu" role="menu" hidden>
-    {% for code, label in labels.items() %}
-  <label class="filter-option" role="menuitemcheckbox">
-    <input type="checkbox"
-           name="loan_type"
-           value="{{ code }}"
-           {% if loan_types and code in loan_types %}checked{% endif %}>
+  <!-- ────────── ROW 1 ────────── -->
+    <!-- Loan type -->
+    <section class="filter-group">
+      <label class="filter-label">Loan&nbsp;type</label>
+
+      <div class="filter-drop" data-drop>
+        <button type="button"
+                class="filter-toggle"
+                aria-haspopup="true"
+                aria-expanded="{{ 'true' if loan_types else 'false' }}">
+          {{ loan_types|length ~ " selected" if loan_types else "Select..." }}
+        </button>
+
+        <div class="filter-menu" role="menu" hidden>
+          {% for code, label in labels.items() %}
+  {% set cid = 'loan_' ~ code.lower() %}
+  <input  type="checkbox"
+          id="{{ cid }}"
+          name="loan_type"
+          value="{{ code }}"
+          {% if loan_types and code in loan_types %}checked{% endif %}>
+
+  <label for="{{ cid }}"
+         class="filter-option loan-{{ code|lower }}">
     {{ label }}
   </label>
 {% endfor %}
-  </div>
-</div>
-</label>
+        </div>
+      </div>
+    </section>
 
-
-    <label>
-      Max price
-      <input type="number" name="max_price" placeholder="e.g. 350000"
+    <!-- Max price -->
+    <section class="filter-group">
+      <label class="filter-label" for="maxPrice">Max&nbsp;price</label>
+      <input id="maxPrice"
+             class="num-input"
+             type="number"
+             name="max_price"
+             placeholder="350000"
              value="{{ max_price or '' }}">
-    </label>
-    
-    <label class="toggle-wrap">
-    	<input  type="checkbox"
-          		name="ir35"
-          		value="1"
-          		id="ir35"
-          		class="toggle"
-          		{% if ir35 %}checked{% endif %} >
-    	<span class="filterBtn">Assumable IR &le; 3.5</span>
-    </label>
-    
-    <button class="applyBtn">Apply</button>
-  </form>
+    </section>
+
+  <!-- ────────── ROW 2 ────────── -->
+    <!-- IR ≤ 3.5 toggle -->
+    <section class="filter-group">
+      <span class="filter-label">Assumable&nbsp;Interest&nbsp;Rate&nbsp;&le;&nbsp;3.5%?</span>
+      <label class="ir-switch">
+        <input  type="checkbox"
+                name="ir35"
+                value="1"
+                {% if ir35 %}checked{% endif %}>
+        <span class="ir-pill"></span>
+      </label>
+    </section>
+
+    <!-- Apply -->
+    <button class="applyBtn" type="submit">Apply</button>
+</form>
 
   <table class="table">
     <thead>
@@ -71,6 +89,5 @@
   </table>
 
 </div>
-
 
 <script src="{{ request.url_for('static', path='js/filters.js') }}" defer></script>

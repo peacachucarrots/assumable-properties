@@ -5,23 +5,28 @@ document.addEventListener("DOMContentLoaded", () => {
   const btn  = drop.querySelector(".filter-toggle");
   const menu = drop.querySelector(".filter-menu");
 
-  btn.addEventListener("click", () => {
-    const open = menu.hidden;
-    menu.hidden = !open;
-    btn.setAttribute("aria-expanded", String(open));
-  });
+  function openMenu() {
+    menu.hidden = false;
+    btn.setAttribute("aria-expanded", "true");
+
+    const natural = menu.scrollWidth;
+    menu.style.width = natural + "px";
+  }
+
+  function closeMenu() {
+    menu.hidden = true;
+    btn.setAttribute("aria-expanded", "false");
+  }
+
+  btn.addEventListener("click", () =>
+    menu.hidden ? openMenu() : closeMenu()
+  );
 
   document.addEventListener("click", (e) => {
-    if (!drop.contains(e.target)) {
-      menu.hidden = true;
-      btn.setAttribute("aria-expanded", "false");
-    }
+    if (!drop.contains(e.target)) closeMenu();
   });
 
   menu.addEventListener("change", () => {
-    if (window.matchMedia("(max-width: 640px)").matches) {
-      menu.hidden = true;
-      btn.setAttribute("aria-expanded", "false");
-    }
+    if (window.matchMedia("(max-width: 640px)").matches) closeMenu();
   });
 });
