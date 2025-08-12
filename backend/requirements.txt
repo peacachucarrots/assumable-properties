@@ -1,0 +1,11 @@
+asyncpg
+fastapi
+pandas
+psycopg-binary==3.2.9
+python-dotenv
+sqlalchemy[asyncio]
+uvicorn[standard]
+itsdangerous
+pydantic-settings>=2.0
+fastapi-limiter>=0.1.6
+redis>=5.0

@@ -1,0 +1,129 @@
+.page {
+    display: flex;
+    justify-content: center;
+    padding: 24px;
+}
+
+.card {
+    width: 100%;
+    max-width: 880px;
+    background: #fff;
+    border: 1px solid #e6e6e6;
+    border-radius: 14px;
+    padding: 20px 22px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+
+.title {
+    margin: 0 0 16px 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.form {
+    display: grid;
+    gap: 16px;
+}
+
+.section {
+    margin: 18px 0 6px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-text);
+    padding-top: 6px;
+    border-top: 1px solid var(--border);
+}
+
+.row,
+.row2 {
+    display: grid;
+    gap: 12px;
+}
+
+.row2 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.stateZip {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    color: #333;
+    margin-bottom: 6px;
+}
+
+input,
+textarea,
+select {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #d5d5d5;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+    background: #fff;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: #6b8afd;
+    box-shadow: 0 0 0 3px rgba(107,138,253,0.15);
+}
+
+textarea {
+    resize: vertical;
+}
+
+.checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    user-select: none;
+}
+
+label.checkbox { margin-bottom: 0; }
+
+.checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--color-primary);
+}
+
+.checkboxWrap {
+    align-self: center;
+    justify-self: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.req {
+    color: #c92c2c;
+    margin-left: 4px;
+}
+
+.actions {
+    margin-top: 6px;
+    display: flex;
+    gap: 10px;
+}
+
+@media (max-width: 900px) {
+    .row2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media(max-width: 560px) {
+    .row2 { grid-template-columns: 1fr; }
+    .stateZip { grid-template-columns: 1fr; }
+    .section { margin-top: 12px; }
+}

@@ -1,0 +1,13 @@
+.wrapper { max-width: 1100px; margin: 1rem auto; padding: 0 1rem; }
+.mapCard { background: var(--color-card-bg); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); }
+.header { padding: .75rem 1rem; border-bottom: 1px solid var(--border); }
+.title { margin: 0; font-size: 1.1rem; font-weight: 700; }
+.subtitle { color: var(--color-muted); font-size: .9rem; }
+
+.map { height: calc(100vh - 220px); width: 100%; border-radius: 0 0 var(--radius-card) var(--radius-card); }
+
+.popup { max-width: 240px; }
+.popAddress { font-weight: 700; margin-bottom: .25rem; }
+.popLine { font-size: .9rem; }
+
+.empty { padding: 1rem; color: var(--color-muted); }
