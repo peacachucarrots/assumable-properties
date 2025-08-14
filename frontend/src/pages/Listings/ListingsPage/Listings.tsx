@@ -13,7 +13,7 @@ type Listing = {
     mls_status: string | null;
 };
 
-const LOAN_TYPES = ["FHA", "VA", "NVVA", "Maybe_NVVA", "CONV"];
+const LOAN_TYPES = ["NVVA", "Maybe_NVVA", "VA", "FHA", "CONV"];
 const STATUSES = [
     "Active",
     "Pending",
@@ -184,7 +184,7 @@ export default function Listings() {
                 {error && <ErrorWithText error="listings" />}
 
                 {rows.length > 0 ? (
-                <ul className={styles.table}>
+                <div className={styles.table}>
                     <div className={`${styles.row} ${styles.headerRow}`} aria-hidden="true">
                         <div className={styles.colHead}>Address</div>
                         <div className={`${styles.colHead} ${styles.right}`}>Price</div>
@@ -200,7 +200,7 @@ export default function Listings() {
                             <div className={styles.cellStatus}><StatusBadge value={l.mls_status} /></div>
                         </Link>
                     ))}
-                </ul>
+                </div>
             ) : (
                 !isLoading && !error && <p className={styles.empty}>No listings found.</p>
             )}

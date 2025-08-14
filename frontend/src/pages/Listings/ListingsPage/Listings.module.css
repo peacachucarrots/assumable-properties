@@ -1,89 +1,85 @@
-/* --- Page layout (unchanged) --- */
 .page {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 1rem;
-  align-items: start;
-  margin-top: 1rem;
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 1rem;
+    align-items: start;
+    margin-top: 1rem;
 }
 .sidebar { position: sticky; top: 1rem; }
 .content { min-width: 0; }
 
-/* --- Filters card: match table header padding/background --- */
 .filtersCard {
-  background: var(--color-card-bg);
-  border: 1px solid #e5e7eb;
-  border-radius: var(--radius-card);
-  overflow: hidden; /* so header bg/border align cleanly */
+    background: var(--color-card-bg);
+    border: 1px solid #e5e7eb;
+    border-radius: var(--radius-card);
+    overflow: hidden;
 }
 
-/* Header matches .headerRow spacing */
 .filtersTitle {
-  margin: 0;
-  padding: 0.8rem 1rem;          /* EXACTLY like .row padding */
-  background: #f3f4f6;           /* same as .headerRow */
-  color: var(--color-text);
-  font-size: 0.95rem;
-  font-weight: 700;
-  border-bottom: 1px solid #eef1f5;
+    margin: 0;
+    padding: 0.8rem 1rem;
+    background: #f3f4f6;
+    color: var(--color-text);
+    font-size: 0.95rem;
+    font-weight: 700;
+    border-bottom: 1px solid #eef1f5;
 }
 
-/* Body padding matches rows */
 .filterSection {
-  border: 0;
-  margin: 0;
-  padding: 0.8rem 1rem;
+    border: 0;
+    margin: 0;
+    padding: 0.8rem 1rem;
 }
 
 .sectionTitle {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-muted);
-  margin: 0 0 0.5rem 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-muted);
+    margin: 0 0 0.5rem 0;
 }
 
 .srOnly {
-  position: absolute !important;
-  width: 1px; height: 1px;
-  padding: 0; margin: -1px; overflow: hidden;
-  clip: rect(0 0 0 0); clip-path: inset(50%);
-  white-space: nowrap; border: 0;
+    position: absolute !important;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0 0 0 0); clip-path: inset(50%);
+    white-space: nowrap; border: 0;
 }
 
 .checkList {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.4rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
 }
 
 .checkItem {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.55rem 0.6rem;
-  border: 1px solid transparent;
-  border-radius: 10px;
-  cursor: pointer;
-  text-align: center;
-  color: var(--color-text);
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.6rem;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    color: var(--color-text);
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 .checkItem:hover { border-color: #e5e7eb; }
 .checkItem:focus-within {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }
 
 .checked :global(.badge) {
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
-  border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
+    border-color: #2563eb;
 }
 
 .optText {
-  font-weight: 600;
-  font-size: 0.85rem;
+    font-weight: 600;
+    font-size: 0.85rem;
 }
 
 .checked.optNvva { background: #e8f7ee; border-color: #cdeee0; color: #0a7a3d; }
@@ -102,76 +98,74 @@
 .checked.optOffmarket     { background: #f2f4f7; border-color: #e4e7ec; color: #475467; }
 
 .clearBtn {
-  margin-top: 0.6rem;
-  background: transparent;
-  border: 0;
-  color: var(--color-primary);
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0;
+    margin-top: 0.6rem;
+    background: transparent;
+    border: 0;
+    color: var(--color-primary);
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
 }
 .clearBtn:hover { text-decoration: underline; }
 
-/* --- Table-like list (keep yours; shown for context) --- */
 .table {
-  border: 1px solid #e5e7eb;
-  border-radius: var(--radius-card);
-  overflow: hidden;
-  background: var(--color-card-bg);
+    border: 1px solid #e5e7eb;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    background: var(--color-card-bg);
 }
 
 .row {
-  display: grid;
-  grid-template-columns: 4fr 1.5fr 1.2fr 1.6fr;
-  gap: 0.75rem;
-  padding: 0.8rem 1rem;      /* matches filters */
-  align-items: center;
-  border-top: 1px solid #eef1f5;
-  text-decoration: none;
-  color: inherit;
-  transition: background 0.15s ease;
+    display: grid;
+    grid-template-columns: minmax(320px, 2fr) repeat(3, minmax(120px, 1fr));
+    gap: 0.75rem;
+    padding: 0.8rem 1rem;
+    align-items: center;
+    border-top: 1px solid #eef1f5;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s ease;
 }
 .row:first-child { border-top: 0; }
 .row:hover { background: #f8fafc; }
 
 .headerRow {
-  background: #f3f4f6;
-  font-weight: 600;
-  color: var(--color-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  font-size: 0.78rem;
+    background: #f3f4f6;
+    font-weight: 600;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-size: 0.78rem;
 }
 
 .colHead { white-space: nowrap; }
 .right { text-align: right; }
 
 .cellAddress {
-  font-weight: 600;
-  color: var(--color-text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    font-weight: 600;
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .cellPrice { font-weight: 700; color: var(--color-text); }
 .cellLoan, .cellStatus { display: flex; align-items: center; gap: 0.5rem; }
 
-/* Responsive stacks (unchanged) */
 @media (max-width: 900px) {
-  .page { grid-template-columns: 1fr; }
-  .sidebar { position: static; }
+    .page { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
 }
 @media (max-width: 720px) {
-  .row {
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-      "address price"
-      "loan    status";
-    gap: 0.5rem 0.75rem;
-  }
-  .headerRow { display: none; }
-  .cellAddress { grid-area: address; }
-  .cellPrice   { grid-area: price; }
-  .cellLoan    { grid-area: loan; }
-  .cellStatus  { grid-area: status; }
+    .row {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "address price"
+            "loan    status";
+        gap: 0.5rem 0.75rem;
+    }
+    .headerRow { display: none; }
+    .cellAddress { grid-area: address; }
+    .cellPrice   { grid-area: price; }
+    .cellLoan    { grid-area: loan; }
+    .cellStatus  { grid-area: status; }
 }
