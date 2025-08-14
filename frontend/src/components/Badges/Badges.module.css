@@ -1,0 +1,29 @@
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.24rem 0.55rem;
+    line-height: 1;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border: 1px solid #e5e8ee;
+    vertical-align: middle;
+}
+
+/* Loan type colors */
+.loanNvva { background: #e8f7ee; border-color: #cdeee0; color: #0a7a3d; }   /* green */
+.loanVa   { background: #fdeaea; border-color: #f6c5c5; color: #a42525; }   /* red */
+.loanMaybe{ background: #fff8e6; border-color: #fde7b5; color: #946200; }   /* yellow */
+.loanConv { background: #f2f4f7; border-color: #e4e7ec; color: #475467; }   /* grey */
+.loanFha  { background: #efe6ff; border-color: #ddccff; color: #5a31a6; }   /* purple */
+
+/* MLS status colors */
+.statusActive         { background: #e8f7ee; border-color: #cdeee0; color: #0a7a3d; } /* green */
+.statusSold           { background: #fdeaea; border-color: #f6c5c5; color: #a42525; } /* red */
+.statusWithdrawn      { background: #e6f0ff; border-color: #cfe0ff; color: #1a57d6; } /* blue */
+.statusPending        { background: #fff8e6; border-color: #fde7b5; color: #946200; } /* yellow */
+.statusUnderContract  { background: #efe6ff; border-color: #ddccff; color: #5a31a6; } /* purple */
+.statusCancelled      { background: #f3e7db; border-color: #e6d2b9; color: #7b4d1d; } /* brown */
+.statusExpired        { background: #ffe6f1; border-color: #ffcbe3; color: #b82f6f; } /* pink */
+.statusOffmarket      { background: #f2f4f7; border-color: #e4e7ec; color: #475467; } /* gray */

@@ -2,7 +2,6 @@ import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 import styles from "./AddListing.module.css";
 import {ErrorWithText} from "../../../components/Error/Error";
-import {LoadingWithText} from "../../../components/Loading/Loading.tsx";
 
 type FormValues = {
     // Address / Property
@@ -23,9 +22,7 @@ type FormValues = {
     date_added?: string;
     mls_link?: string | null;
     mls_status?: string | null;
-    equity_to_cover?: number | null;
     sent_to_clients?: boolean;
-    investor_allowed?: boolean;
 
     // Loan
     loan_type?: "FHA" | "VA" | "NVVA" | "Maybe_NVVA" | "CONV";
@@ -46,6 +43,15 @@ type FormValues = {
     response_from_realtor?: string | null;
     full_response_from_amy?: string | null;
 };
+
+function numOrNull(v: FormDataEntryValue | null | undefined): number | null {
+    if (v == null) return null;
+    const s = String(v).trim();
+    if (s === "") return null;
+    const cleaned = s.replace(/^\$/, "").replace(/[,\s]/g, "");
+    const n = Number(cleaned);
+    return Number.isFinite(n) ? n : null;
+}
 
 export default function AddListing() {
     const navigate = useNavigate();
@@ -91,10 +97,8 @@ export default function AddListing() {
             // Listing
             date_added: (String(fd.get("date_added") || "") || today),
             mls_link: (String(fd.get("mls_link") || "").trim() || null),
-            mls_id: (String(fd.get("mls_id") || "").trim() || null),
             mls_status: (String(fd.get("mls_status") || "").trim() || null),
             sent_to_clients: fd.get("sent_to_clients") === "on",
-            investor_allowed: fd.get("investor_allowed") === "on",
 
             // Loan
             loan_type: (String(fd.get("loan_type") || "").trim() || undefined) as Payload["loan_type"],
@@ -226,10 +230,6 @@ export default function AddListing() {
                             <label htmlFor="asking_price">Asking Price ($)</label>
                             <input id="asking_price" name="asking_price" type="number" min="0" step="1" placeholder="500000" />
                         </div>
-                        <div>
-                            <label htmlFor="equity_to_cover">Equity To Cover ($)</label>
-                            <input id="equity_to_cover" name="equity_to_cover" type="number" min="0" step="1" placeholder="70000" />
-                        </div>
                         <div className={styles.checkboxWrap}>
                             <label className={styles.checkbox}>
                                 <input id="sent_to_clients" name="sent_to_clients" type="checkbox" /> Sent to clients
@@ -269,12 +269,6 @@ export default function AddListing() {
                         <div>
                             <label htmlFor="loan_servicer">Loan Servicer</label>
                             <input id="loan_servicer" name="loan_servicer" placeholder="PennyMac" />
-                        </div>
-                        <div className={styles.checkboxWrap}>
-                            <label className={styles.checkbox}>
-                                <input id="investor_allowed" name="investor_allowed" type="checkbox" />
-                                Allow investor to assume?
-                            </label>
                         </div>
                         <div />
                         <div />

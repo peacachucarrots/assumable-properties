@@ -1,14 +1,16 @@
-import {useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useSearchParams } from "react-router-dom";
 
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import type { Marker as LeafletMarker } from "leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 import {LoadingWithText} from "../../components/Loading/Loading.tsx";
 import {ErrorWithText} from "../../components/Error/Error.tsx";
 import styles from "./Map.module.css";
+import {LoanBadge, StatusBadge} from "../../components/Badges/Badges.tsx";
 
 type MapListing = {
     listing_id: number;
@@ -37,6 +39,9 @@ export const defaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = defaultIcon;
 
+const isActive = (s: string | null | undefined) =>
+  !!s && s.trim().toLowerCase().startsWith("active");
+
 function FitBounds({ points }: { points: [number, number][] }) {
     const map = useMap();
     useEffect(() => {
@@ -47,9 +52,10 @@ function FitBounds({ points }: { points: [number, number][] }) {
     return null;
 }
 
-export default function Map() {
+export default function ListingsMap() {
     const [sp] = useSearchParams();
     const selected = sp.getAll("loan_type");
+    const focusId = sp.get("focus");
 
     const qs =
         selected.length === 0
@@ -60,25 +66,59 @@ export default function Map() {
         queryKey: ["listings", "map", selected],
         keepPreviousData: true,
         queryFn: () =>
-            fetch(`/api/listings${qs}`, { credentials: "include" }).then(r => {
+            fetch(`/pyapi/listings${qs}`, { credentials: "include" }).then(r => {
                 if (!r.ok) throw new Error("API error");
                 return r.json();
             })
     });
 
-    const points = useMemo(
+    const activeGeocoded = useMemo(
         () =>
-            (data ?? [])
-                .filter(d => typeof d.lat === "number" && typeof d.lon === "number")
-                .map(d => [d.lat as number, d.lon as number] as [number, number]),
+            (data ?? []).filter(
+                (d) => isActive(d.mls_status) && typeof d.lat === "number" && typeof d.lon === "number"
+            ),
         [data]
     );
 
-    const center: [number, number] = points[0] ?? [39.5, -98.35];
+    const focus = useMemo(
+        () =>
+            (data ?? []).find(
+                (d) =>
+                    focusId && String(d.listing_id) === String(focusId) && d.lat != null && d.lon != null
+            ) || null,
+        [data, focusId]
+    );
+
+    const displayListings = useMemo(() => {
+        if (!focus) return activeGeocoded;
+        const map = new Map<number, MapListing>();
+        for (const d of activeGeocoded) map.set(d.listing_id, d);
+        map.set(focus.listing_id, focus);
+        return Array.from(map.values());
+    }, [activeGeocoded, focus]);
+
+    const points = useMemo<[number, number][]>(
+        () => displayListings.map((d) => [d.lat as number, d.lon as number]),
+        [displayListings]
+    );
+
     const hasAny = points.length > 0;
+    const center: [number, number] = focus
+        ? [focus.lat as number, focus.lon as number]
+        : points[0] ?? [39.5, -98.35];
+    const zoom = focus ? 13 : hasAny ? 8 : 4;
+
+    const focusMarkerRef = useRef<LeafletMarker | null>(null);
+
+    useEffect(() => {
+        if (focus) {
+            const t = setTimeout(() => focusMarkerRef.current?.openPopup(), 50);
+            return () => clearTimeout(t);
+        }
+    }, [focus?.listing_id]);
 
     if (isLoading) return <LoadingWithText text="map" />;
-    if (error) return <ErrorWithText text="map" />;
+    if (error) return <ErrorWithText error="map" />;
 
     return (
         <div className={styles.wrapper}>
@@ -86,13 +126,13 @@ export default function Map() {
                 <div className={styles.header}>
                     <h1 className={styles.title}>Listings Map</h1>
                     <div className={styles.subtitle}>
-                        {selected.length ? `Filtered by ${selected.join(", ")}` : "All loan types"}
+                        {focus ? "Focusing selected listing" : "Active only"}
                     </div>
                 </div>
 
                 <MapContainer
                     center={center}
-                    zoom={hasAny ? 8 : 4}
+                    zoom={zoom}
                     className={styles.map}
                     scrollWheelZoom
                     preferCanvas
@@ -102,36 +142,42 @@ export default function Map() {
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
 
-                    {hasAny && <FitBounds points={points} />}
+                    {!focus && hasAny && <FitBounds points={points} />}
 
-                    {(data ?? [])
-                        .filter(d => d.lat != null && d.lon != null)
-                        .map(d => (
-                            <Marker key={d.listing_id} position={[d.lat!, d.lon!]}>
-                                <Popup>
-                                    <div className={styles.popup}>
-                                        <div className={styles.popAddress}>{d.address}</div>
-                                        <div className={styles.popLine}>
-                                            <span className="muted">Price:</span>{" "}
-                                            {d.price ? `$${d.price.toLocaleString()}` : "-"}
-                                        </div>
-                                        <div className={styles.popLine}>
-                                            <span className="muted">Loan:</span> {d.loan_type}
-                                            {" ~ "}
-                                            <span className="muted">Status:</span> { d.mls_status ?? "-"}
-                                        </div>
-                                        <Link to={`/listing/${d.listing_id}`} className="btn" style={{ display: "inline-block", marginTop: "0.35rem", color:"white" }}>
-                                            View Details
-                                        </Link>
+                    {displayListings.map((d) => (
+                        <Marker
+                            key={d.listing_id}
+                            position={[d.lat!, d.lon!]}
+                            ref={d.listing_id === focus?.listing_id ? focusMarkerRef : undefined}
+                        >
+                            <Popup>
+                                <div className={styles.popup}>
+                                    <div className={styles.popAddress}>{d.address}</div>
+                                    <div className={styles.popLine}>
+                                        <span className="muted">Price:</span>{" "}
+                                        {d.price ? `$${d.price.toLocaleString()}` : "-"}
                                     </div>
-                                </Popup>
-                            </Marker>
+                                    <div className={styles.popLine}>
+                                        <span className="muted">Loan:</span> <LoanBadge value={d.loan_type} />
+                                        {" · "}
+                                        <span className="muted">Status:</span> <StatusBadge value={d.mls_status} />
+                                    </div>
+                                    <Link
+                                        to={`/listing/${d.listing_id}`}
+                                        className="btn"
+                                        style={{ display: "inline-block", marginTop: "0.35rem", color:"white" }}
+                                    >
+                                        View Details
+                                    </Link>
+                                </div>
+                            </Popup>
+                        </Marker>
                         ))}
                 </MapContainer>
 
                 {!hasAny && (
                     <div className={styles.empty}>
-                        No geocoded listings to show. Add <code>lat</code>/<code>long</code> to your API.
+                        No <strong>active</strong> geocoded listings to show.
                     </div>
                 )}
             </div>

@@ -9,7 +9,7 @@ export default function Navbar() {
     const { data: isAuthed = false } = useQuery({
         queryKey: ["auth", "me"],
         queryFn: async () => {
-            const r = await fetch("/api/auth/me", { credentials: "include"});
+            const r = await fetch("/pyapi/auth/me", { credentials: "include"});
             return r.ok;
         },
         staleTime: 0,
@@ -18,7 +18,7 @@ export default function Navbar() {
 
     const logout = useMutation({
         mutationFn: async () => {
-            await fetch("/api/auth/logout", {
+            await fetch("/pyapi/auth/logout", {
                 method: "POST",
                 credentials: "include"
             });

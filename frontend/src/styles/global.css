@@ -7,6 +7,10 @@
     --color-danger: #dc2626;
     --color-danger-hover: #b91c1c;
 
+    --chip-bg: #f3f5f8;
+    --chip-fg: #334;
+    --chip-border: #e5e8ee;
+
     --border: #e5e7eb;
     --border-strong: #d1d5db;
     --radius-card: 8px;

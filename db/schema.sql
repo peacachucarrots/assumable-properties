@@ -22,16 +22,16 @@ CREATE TABLE IF NOT EXISTS listing (
     mls_link     text,
     mls_status   text,
     equity_to_cover numeric(12, 2),
-    sent_to_clients boolean,
-    investor_ok  boolean
+    sent_to_clients boolean
 );
 
 -- Loan (assumable)
 CREATE TABLE IF NOT EXISTS loan (
     loan_id      serial PRIMARY KEY,
-    property_id  int NOT NULL REFERENCES property,
+    property_id  int NOT NULL UNIQUE REFERENCES property,
     loan_type    text check (loan_type in ('FHA','VA','NVVA','Maybe_NVVA', 'CONV')),
     interest_rate numeric(5,3),
+    balance       numeric(14,2),
     balance       numeric(14,2),
     piti          numeric(12,2),
     loan_servicer text,
