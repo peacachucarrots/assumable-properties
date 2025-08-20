@@ -95,7 +95,7 @@ export default function Listings() {
         queryKey: ["listings", selectedLoanTypes],
         keepPreviousData: true,
         queryFn: () => {
-            return fetch(`/pyapi/listings${qs}`, { credentials: "include" })
+            return fetch(`/api/listings${qs}`, { credentials: "include" })
                 .then((r) => {
                     if (!r.ok) throw new Error("API error");
                     return r.json();

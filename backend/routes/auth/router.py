@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException, Response, Request
+from fastapi import APIRouter, HTTPException, Response, Request, Depends
+from fastapi_limiter.depends import RateLimiter
 from pydantic import BaseModel
 import hmac
 from itsdangerous import TimestampSigner, BadSignature, SignatureExpired
@@ -12,7 +13,7 @@ signer = TimestampSigner(settings.APP_SESSION_SECRET.get_secret_value())
 class LoginIn(BaseModel):
     token: str
 
-@router.post("/login")
+@router.post("/login", dependencies=[Depends(RateLimiter(times=5, seconds=60))])
 async def login(payload: LoginIn, response: Response):
     expected = settings.APP_ACCESS_TOKEN.get_secret_value()
     if not hmac.compare_digest(expected, payload.token):

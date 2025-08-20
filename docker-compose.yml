@@ -5,13 +5,20 @@ services:
     ports: ["5432:5432"]
     volumes:
       - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
 
   api:
     build: ./backend
     environment:
       - REDIS_URL=redis://redis:6379/0
     env_file: .env
-    depends_on: [db]
+    depends_on:
+      db:
+        condition: service_healthy
     volumes:
       - ./backend:/app
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
@@ -20,12 +27,17 @@ services:
   load-data:
     build: ./backend
     env_file: .env
-    depends_on: [ db ]
+    depends_on:
+      db:
+        condition: service_healthy
     volumes:
       - ./backend:/app
       - ./data:/data:ro
     command: >
-      python -m etl.sheet_insertion /db/data/assumable_properties.xlsx
+      sh -lc "python -m etl.sheet_insertion /app/db/data/assumable_properties.xlsx
+      --sheet 'Assumable Properties MLS'
+      --db postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}"
+    profiles: ["tools"]
 
   redis:
     image: redis:7-alpine

@@ -1,30 +1,21 @@
 import {Link, NavLink, useNavigate} from "react-router-dom";
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import styles from "./Navbar.module.css";
 
 export default function Navbar() {
     const navigate = useNavigate();
     const qc = useQueryClient();
 
-    const { data: isAuthed = false } = useQuery({
-        queryKey: ["auth", "me"],
-        queryFn: async () => {
-            const r = await fetch("/pyapi/auth/me", { credentials: "include"});
-            return r.ok;
-        },
-        staleTime: 0,
-        refetchOnWindowFocus: false
-    });
-
     const logout = useMutation({
         mutationFn: async () => {
-            await fetch("/pyapi/auth/logout", {
+            await fetch("/api/auth/logout", {
                 method: "POST",
                 credentials: "include"
             });
         },
-        onSuccess: () => {
-            qc.setQueryData(["auth", "me"], false);
+        onSuccess: async () => {
+            await qc.cancelQueries();
+            qc.clear();
             navigate("/", { replace: true });
         }
     });
@@ -64,24 +55,14 @@ export default function Navbar() {
                 </div>
 
                 <div className={styles.right}>
-                    {isAuthed ? (
-                        <button
-                            className="btn btn--secondary"
-                            onClick={() => logout.mutate()}
-                            disabled={logout.isPending}
-                            title="Logout"
-                        >
-                            {logout.isPending ? "Logging out..." : "Logout"}
-                        </button>
-                    ) : (
-                        <button
-                            className="btn"
-                            onClick={() => navigate("/")}
-                            title="Login"
-                        >
-                            Login
-                        </button>
-                    )}
+                    <button
+                        className="btn btn--secondary"
+                        onClick={() => logout.mutate()}
+                        disabled={logout.isPending}
+                        title="Logout"
+                    >
+                        {logout.isPending ? "Logging out..." : "Logout"}
+                    </button>
                 </div>
             </div>
         </nav>

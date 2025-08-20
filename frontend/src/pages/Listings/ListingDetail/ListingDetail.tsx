@@ -20,9 +20,8 @@ type Detail = {
     beds?: number | null;
     baths?: number | null;
     sqft?: number | null;
-    hoa_month?: number | null;
-    latitude?: number | null;
-    longitude?: number | null;
+    hoa_amount?: number | null;
+    hoa_frequency?: string | null;
 
     // Listing
     date_added?: string | null;
@@ -30,7 +29,6 @@ type Detail = {
     mls_status?: string | null;
     equity_to_cover?: number | null;
     sent_to_clients?: boolean | null;
-    investor_ok?: boolean | null;
 
     // Realtor
     realtor_name: string;
@@ -74,7 +72,7 @@ export default function ListingDetail() {
     const { data, isLoading, error } = useQuery<Detail>({
         queryKey: ["listing", id],
         queryFn: async () => {
-            const r = await fetch(`/pyapi/listings/${id}`, {
+            const r = await fetch(`/api/listings/${id}`, {
                 credentials: "include",
             });
             if (!r.ok) throw new Error(await r.text());
@@ -199,8 +197,8 @@ export default function ListingDetail() {
                         <dd className={styles.dd}>{d.sqft == null ? "—" : d.sqft.toLocaleString()}</dd>
                     </div>
                     <div className={styles.item}>
-                        <dt className={styles.dt}>HOA / Month</dt>
-                        <dd className={styles.dd}>{fmtMoney(d.hoa_month)}</dd>
+                        <dt className={styles.dt}>HOA</dt>
+                        <dd className={styles.dd}>{fmtMoney(d.hoa_amount)} {d.hoa_frequency}</dd>
                     </div>
                 </dl>
             </section>

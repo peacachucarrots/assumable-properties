@@ -3,47 +3,6 @@ import {useState} from "react";
 import styles from "./AddListing.module.css";
 import {ErrorWithText} from "../../../components/Error/Error";
 
-type FormValues = {
-    // Address / Property
-    street: string;
-    unit?: string | null;
-    city: string;
-    state: string;
-    zip: string;
-    beds?: string | null;
-    baths?: string | null;
-    sqft?: string | null;
-    hoa_month?: number | null;
-
-    // Realtor
-    realtor_name: string;
-
-    // Listing
-    date_added?: string;
-    mls_link?: string | null;
-    mls_status?: string | null;
-    sent_to_clients?: boolean;
-
-    // Loan
-    loan_type?: "FHA" | "VA" | "NVVA" | "Maybe_NVVA" | "CONV";
-    interest_rate?: number | null;
-    balance?: number | null;
-    piti?: number | null;
-    loan_servicer?: string | null;
-
-    // Price
-    asking_price?: number | null;
-
-    // Analysis
-    analysis_url?: string | null;
-    done_running_numbers?: boolean;
-    roi_pass?: boolean;
-
-    // Notes / responses
-    response_from_realtor?: string | null;
-    full_response_from_amy?: string | null;
-};
-
 function numOrNull(v: FormDataEntryValue | null | undefined): number | null {
     if (v == null) return null;
     const s = String(v).trim();
@@ -79,7 +38,9 @@ export default function AddListing() {
 
         const today = new Date().toISOString().slice(0, 10);
 
-        const data: Payload = {
+        const hf = String(fd.get("hoa_frequency") || "").trim();
+
+        const data = {
             // Address / property
             street,
             unit: (String(fd.get("unit") || "").trim() || null),
@@ -89,7 +50,8 @@ export default function AddListing() {
             beds: numOrNull(fd.get("beds")),
             baths: numOrNull(fd.get("baths")),
             sqft: numOrNull(fd.get("sqft")),
-            hoa_month: numOrNull(fd.get("hoa_month")),
+            hoa_amount: numOrNull(fd.get("hoa_amount")),
+            hoa_frequency: hf === "" ? null : hf,
 
             // Realtor
             realtor_name: String(fd.get("realtor_name") || "").trim() || "Unknown",
@@ -101,7 +63,7 @@ export default function AddListing() {
             sent_to_clients: fd.get("sent_to_clients") === "on",
 
             // Loan
-            loan_type: (String(fd.get("loan_type") || "").trim() || undefined) as Payload["loan_type"],
+            loan_type: (String(fd.get("loan_type") || "").trim() || undefined),
             interest_rate: numOrNull(fd.get("interest_rate")),
             balance: numOrNull(fd.get("balance")),
             piti: numOrNull(fd.get("piti")),
@@ -125,11 +87,18 @@ export default function AddListing() {
             const res = await fetch("/api/listings", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                credentials: "include",
                 body: JSON.stringify(data),
             });
             if (!res.ok) {
-                const msg = await res.text();
-                throw new Error(msg || `Request failed (${res.status}`);
+                let detail = "";
+                try {
+                    const j = await res.clone().json();
+                    detail = j?.message || j?.error || j?.detail || j?.step || JSON.stringify(j);
+                } catch {
+                    try { detail = await res.text(); } catch { /* ignore */ }
+                }
+                throw new Error(`Request failed (${res.status}) ${detail || ""}`.trim());
             }
             const json = await res.json();
             if (json?.id) {
@@ -138,7 +107,8 @@ export default function AddListing() {
                 navigate("/listings");
             }
         } catch (err: any) {
-            setError(err.message || "Something went wrong saving the listing.");
+            setError(err?.message || "Something went front saving the listing.");
+            console.error("create_listing_error:", err);
         } finally {
             setSaving(false);
         }
@@ -193,8 +163,18 @@ export default function AddListing() {
                             <input id="sqft" name="sqft" placeholder="1750" type="number" min="0" step="1" />
                         </div>
                         <div>
-                            <label htmlFor="hoa_month">HOA / Month ($)</label>
-                            <input id="hoa_month" name="hoa_month" placeholder="250" type="number" min="0" step="1" />
+                            <label htmlFor="hoa_amount">HOA ($)</label>
+                            <input id="hoa_amount" name="hoa_amount" placeholder="250" type="number" min="0" step="1" />
+                        </div>
+                        <div>
+                            <label htmlFor="hoa_frequency">HOA Frequency</label>
+                            <select id="hoa_frequency" name="hoa_frequency" defaultValue="">
+                                <option value="">— Select —</option>
+                                <option>Monthly</option>
+                                <option>Quarterly</option>
+                                <option>Semi-Annual</option>
+                                <option>Annual</option>
+                            </select>
                         </div>
                     </div>
 
@@ -318,7 +298,7 @@ export default function AddListing() {
                     </div>
 
                     <p className="hint">
-                        Property coordinates will be auto-filled by the database after insert.
+                        Property coordinates will be auto-filled after saving.
                     </p>
                 </form>
             </div>

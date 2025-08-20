@@ -26,11 +26,11 @@ SELECT l.listing_id,
 
   -- address / property
   p.street, p.unit, p.city, p.state, p.zip,
-  p.beds, p.baths, p.sqft, p.hoa_month,
+  p.beds, p.baths, p.sqft, p.hoa_amount, p.hoa_frequency,
 
   -- listing
   l.date_added, l.mls_link, l.mls_status,
-  l.equity_to_cover, l.sent_to_clients, l.investor_ok,
+  l.equity_to_cover, l.sent_to_clients,
 
   -- realtor
   r.name AS realtor_name,

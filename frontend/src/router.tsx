@@ -1,20 +1,30 @@
-import {createBrowserRouter, Outlet, RouterProvider} from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import Home          from "./pages/Home/Home";
 import ListingsPage  from "./pages/Listings/ListingsPage/Listings";
 import AddListing    from "./pages/Listings/AddListing/AddListing";
 import ListingDetail from "./pages/Listings/ListingDetail/ListingDetail";
 import Map           from "./pages/Map/Map";
 import Navbar        from "./components/Navbar/Navbar.tsx";
+import { authLoader } from "./authLoader.ts";
 
-import Test from "./pages/Test.tsx";
+function PrivateLayout() {
+    return (
+        <>
+            <Navbar />
+            <Outlet />
+        </>
+    );
+}
 
 export const router = createBrowserRouter([
+    // Public
+    { path: "/", element: <Home /> },
+    // Private
     {
         path: "/",
-        element: <AppLayout />,
+        element: <PrivateLayout />,
+        loader: authLoader,
         children: [
-            { index: true, element: <Home /> },
-            { path: "/test", element: <Test /> },
             { path: "/listings", element: <ListingsPage /> },
             { path: "/AddListing", element: <AddListing /> },
             { path: "/listing/:id", element: <ListingDetail /> },
@@ -25,13 +35,4 @@ export const router = createBrowserRouter([
 
 export function AppRouter() {
     return <RouterProvider router={router} />;
-}
-
-function AppLayout() {
-    return (
-        <>
-            <Navbar />
-            <Outlet />
-        </>
-    );
 }

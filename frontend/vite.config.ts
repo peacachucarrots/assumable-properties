@@ -7,13 +7,8 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/api": {
-        target: "http://localhost:3000",
-        changeOrigin: true,
-      },
-      "/pyapi": {
         target: "http://localhost:8000",
         changeOrigin: true,
-        rewrite: p => p.replace(/^\/pyapi/, ""),
       }
     },
   },

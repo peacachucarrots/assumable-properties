@@ -12,7 +12,7 @@ export default function Home() {
     const nav = useNavigate();
 
     useEffect(() => {
-        fetch("/pyapi/auth/me", { credentials: "include"}).then((r) => {
+        fetch("/api/auth/me", { credentials: "include"}).then((r) => {
             if (r.ok) nav("/listings", { replace: true });
         });
     }, [nav]);
@@ -21,7 +21,7 @@ export default function Home() {
         e.preventDefault();
         setBusy(true);
         setError("");
-        const res = await fetch("/pyapi/auth/login", {
+        const res = await fetch("/api/auth/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",

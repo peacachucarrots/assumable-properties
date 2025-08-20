@@ -66,7 +66,7 @@ export default function ListingsMap() {
         queryKey: ["listings", "map", selected],
         keepPreviousData: true,
         queryFn: () =>
-            fetch(`/pyapi/listings${qs}`, { credentials: "include" }).then(r => {
+            fetch(`/api/listings${qs}`, { credentials: "include" }).then(r => {
                 if (!r.ok) throw new Error("API error");
                 return r.json();
             })
@@ -118,7 +118,7 @@ export default function ListingsMap() {
     }, [focus?.listing_id]);
 
     if (isLoading) return <LoadingWithText text="map" />;
-    if (error) return <ErrorWithText error="map" />;
+    if (error) return <ErrorWithText error="Error loading map" />;
 
     return (
         <div className={styles.wrapper}>
