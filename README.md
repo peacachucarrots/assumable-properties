@@ -11,3 +11,4 @@ large amounts of property, realtor, and listing data.
 - Hook up MLS API to auto-refresh MLS Status + Price.
 - Allow listings to be edited from the listing detail
 page.
+- Add SQL Query Analytics..?
