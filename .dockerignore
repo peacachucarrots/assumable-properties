@@ -1,5 +1,2 @@
-.env
-.idea
-.venv
 backend/db/data/*
 *.xlsx

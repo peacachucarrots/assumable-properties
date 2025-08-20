@@ -34,7 +34,7 @@ services:
       - ./backend:/app
       - ./data:/data:ro
     command: >
-      sh -lc "python -m etl.sheet_insertion /app/db/data/assumable_properties.xlsx
+      sh -lc "python -m etl.sheet_insertion ${XLSX_PATH}
       --sheet 'Assumable Properties MLS'
       --db postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}"
     profiles: ["tools"]

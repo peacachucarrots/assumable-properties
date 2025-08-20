@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Iterable, Optional, Any
 
-_DEFAULT_TRUE = {"yes","y","true","t","1","done","complete","completed","x","✓","✔"}
+_DEFAULT_TRUE = {"yes","y","true","t","1","done","complete","completed"}
 _DEFAULT_FALSE = {"no","n","false","f","0","not done","incomplete"}
 
 def parse_boolish(

@@ -89,7 +89,6 @@ def main():
         except Exception:
             pass
 
-        # ---- main row loop
         for i, row in df.iterrows():
             sp = conn.begin_nested()
             try:
